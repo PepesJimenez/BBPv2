@@ -1,0 +1,145 @@
+###############################################################################
+#                                                                             #
+#                                                       22/Apr/2017  18:54:09 #
+# IAR C/C++ Compiler V5.30.1.30284/W32, Kickstart edition for MSP430          #
+# Copyright 1996-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    __rt_version  =  3                                                       #
+#    __double_size =  32                                                      #
+#    __reg_r4      =  free                                                    #
+#    __reg_r5      =  free                                                    #
+#    __pic         =  no                                                      #
+#    __core        =  430                                                     #
+#    Source file   =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test.c      #
+#    Command line  =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test.c      #
+#                     -lCN E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\Debug\ #
+#                     List\ -o E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\De #
+#                     bug\Obj\ --no_cse --no_unroll --no_inline               #
+#                     --no_code_motion --no_tbaa --debug -D__MSP430G2553__    #
+#                     -e --double=32 --dlib_config "C:\Program Files          #
+#                     (x86)\IAR Systems\Embedded Workbench 6.0                #
+#                     Kickstart\430\LIB\DLIB\dl430fn.h" -On                   #
+#    List file     =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\Debug\List\ #
+#                     test.lst                                                #
+#    Object file   =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\Debug\Obj\t #
+#                     est.r43                                                 #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test.c
+      1          /* ************************************************************************** */
+      2          /* Programa para testear el funcionamiento del Basic BoosterPack v2 (BBPv2)   */
+      3          /* para el microcontrolador MSP430G2533                                       */
+      4          /*                                                                            */
+      5          /* Version: 0.1                                                               */
+      6          /* ************************************************************************** */
+      7          
+      8          #include "io430g2533.h"        // MSP430G2533
+
+   \                                 In  segment DATA16_AN, at 0x56
+   \   union <unnamed> volatile _A_DCOCTL
+   \                     _A_DCOCTL:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x57
+   \   union <unnamed> volatile _A_BCSCTL1
+   \                     _A_BCSCTL1:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x120
+   \   union <unnamed> volatile _A_WDTCTL
+   \                     _A_WDTCTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x10fe
+   \   unsigned char const volatile CALDCO_1MHZ
+   \                     CALDCO_1MHZ:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x10ff
+   \   unsigned char const volatile CALBC1_1MHZ
+   \                     CALBC1_1MHZ:
+   \   000000                DS8 1
+      9          
+     10          
+     11          /* ----- Prototipos ----- */
+     12          
+     13          void Config_uC();
+     14          
+     15          
+     16          
+     17          /* ---- MAIN ---- */
+     18          
+
+   \                                 In  segment CODE, align 2
+     19          int main () {
+   \                     main:
+     20              
+     21              // Configuracion uControlador
+     22              Config_uC();
+   \   000000   B012....     CALL    #Config_uC
+     23              
+     24              
+     25              
+     26              
+     27              return 0;   
+   \   000004   0C43         MOV.W   #0x0, R12
+   \   000006   3041         RET
+     28          } //Fin MAIN
+     29          
+     30          
+     31          /* ---- Funciones ---- */
+     32          
+
+   \                                 In  segment CODE, align 2
+     33          void Config_uC() {
+   \                     Config_uC:
+     34              
+     35              WDTCTL = WDTPW + WDTHOLD;        // Detiene watchdog
+   \   000000   B240805A2001 MOV.W   #0x5a80, &0x120
+     36              DCOCTL = 0;                      // Frecuencia DCO (1MHz)
+   \   000006   C2435600     MOV.B   #0x0, &0x56
+     37              BCSCTL1 = CALBC1_1MHZ;
+   \   00000A   D242FF105700 MOV.B   &0x10ff, &0x57
+     38              DCOCTL = CALDCO_1MHZ;
+   \   000010   D242FE105600 MOV.B   &0x10fe, &0x56
+     39              
+     40          } // Fin Config_uC()
+   \   000016   3041         RET
+   \   000018                REQUIRE _A_WDTCTL
+   \   000018                REQUIRE _A_DCOCTL
+   \   000018                REQUIRE _A_BCSCTL1
+   \   000018                REQUIRE CALBC1_1MHZ
+   \   000018                REQUIRE CALDCO_1MHZ
+
+   Maximum stack usage in bytes:
+
+     Function       CSTACK
+     --------       ------
+     Config_uC          2
+     main               2
+       -> Config_uC     2
+
+
+   Segment part sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     _A_DCOCTL         1
+     _A_BCSCTL1        1
+     _A_WDTCTL         2
+     CALDCO_1MHZ       1
+     CALBC1_1MHZ       1
+     main              8
+     Config_uC        24
+
+ 
+ 32 bytes in segment CODE
+  6 bytes in segment DATA16_AN
+ 
+ 32 bytes of CODE memory
+  0 bytes of DATA memory (+ 6 bytes shared)
+
+Errors: none
+Warnings: none

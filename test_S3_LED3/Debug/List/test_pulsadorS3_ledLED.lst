@@ -1,0 +1,527 @@
+###############################################################################
+#                                                                             #
+#                                                       04/May/2017  10:15:52 #
+# IAR C/C++ Compiler V5.30.1.30284/W32, Kickstart edition for MSP430          #
+# Copyright 1996-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    __rt_version  =  3                                                       #
+#    __double_size =  32                                                      #
+#    __reg_r4      =  free                                                    #
+#    __reg_r5      =  free                                                    #
+#    __pic         =  no                                                      #
+#    __core        =  430                                                     #
+#    Source file   =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test_pulsad #
+#                     orS3_ledLED.c                                           #
+#    Command line  =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test_pulsad #
+#                     orS3_ledLED.c -lCN E:\UNIVERSIDAD\2o_cuatri\uC\Practica #
+#                     s\BBPv2\Debug\List\ -o E:\UNIVERSIDAD\2o_cuatri\uC\Prac #
+#                     ticas\BBPv2\Debug\Obj\ --no_cse --no_unroll             #
+#                     --no_inline --no_code_motion --no_tbaa --debug          #
+#                     -D__MSP430G2553__ -e --double=32 --dlib_config          #
+#                     "C:\Program Files (x86)\IAR Systems\Embedded Workbench  #
+#                     6.0 Kickstart\430\LIB\DLIB\dl430fn.h" -On               #
+#    List file     =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\Debug\List\ #
+#                     test_pulsadorS3_ledLED.lst                              #
+#    Object file   =  E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\Debug\Obj\t #
+#                     est_pulsadorS3_ledLED.r43                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+E:\UNIVERSIDAD\2o_cuatri\uC\Practicas\BBPv2\test_pulsadorS3_ledLED.c
+      1          /* ************************************************************************** */
+      2          /* Programa para testear el funcionamiento del Basic BoosterPack v2 (BBPv2)   */
+      3          /* para el microcontrolador MSP430G2533                                       */
+      4          /*                                                                            */
+      5          /* Autor: Jose A. Jimenez                                                     */
+      6          /* Version: 0.1                                                               */
+      7          /* ************************************************************************** */
+      8          
+      9          #include "io430g2533.h"                 // MSP430G2533
+
+   \                                 In  segment DATA16_AN, at 0x56
+   \   union <unnamed> volatile _A_DCOCTL
+   \                     _A_DCOCTL:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x57
+   \   union <unnamed> volatile _A_BCSCTL1
+   \                     _A_BCSCTL1:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x21
+   \   union <unnamed> volatile _A_P1OUT
+   \                     _A_P1OUT:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x22
+   \   union <unnamed> volatile _A_P1DIR
+   \                     _A_P1DIR:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x23
+   \   union <unnamed> volatile _A_P1IFG
+   \                     _A_P1IFG:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x24
+   \   union <unnamed> volatile _A_P1IES
+   \                     _A_P1IES:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x25
+   \   union <unnamed> volatile _A_P1IE
+   \                     _A_P1IE:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x26
+   \   union <unnamed> volatile _A_P1SEL
+   \                     _A_P1SEL:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x41
+   \   union <unnamed> volatile _A_P1SEL2
+   \                     _A_P1SEL2:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x27
+   \   union <unnamed> volatile _A_P1REN
+   \                     _A_P1REN:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x29
+   \   union <unnamed> volatile _A_P2OUT
+   \                     _A_P2OUT:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x2a
+   \   union <unnamed> volatile _A_P2DIR
+   \                     _A_P2DIR:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x2e
+   \   union <unnamed> volatile _A_P2SEL
+   \                     _A_P2SEL:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x42
+   \   union <unnamed> volatile _A_P2SEL2
+   \                     _A_P2SEL2:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x120
+   \   union <unnamed> volatile _A_WDTCTL
+   \                     _A_WDTCTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x10fe
+   \   unsigned char const volatile CALDCO_1MHZ
+   \                     CALDCO_1MHZ:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x10ff
+   \   unsigned char const volatile CALBC1_1MHZ
+   \                     CALBC1_1MHZ:
+   \   000000                DS8 1
+     10          
+     11          #define ON          1                   // Activo
+     12          #define OFF         0                   // Desactivo
+     13          #define PULS_ON     0                   // Pulsador presionado
+     14          #define PULS_OFF    1                   // Pulsador soltado
+     15          #define LED_ON      1                   // LED encendido
+     16          #define LED_OFF     0                   // LED apagado
+     17          
+     18          
+     19                                                  // NO DEBERIA ESTAR INICIALIZADO A 0????
+     20                                                  // CORRECION DE ERRORES??
+     21          
+     22          typedef union {                         // Flags        
+     23                                                  // tamañ campo bits
+     24              unsigned char total;                // Todos
+     25              struct {                        
+     26                  unsigned char f0 :1;            // Flag 0
+     27                  unsigned char f1 :1;            // Flag 1
+     28                  unsigned char f2 :1;            // Flag 2
+     29                  unsigned char f3 :1;            // Flag 3
+     30                  unsigned char f4 :1;            // Flag 4
+     31                  unsigned char f5 :1;            // Flag 5
+     32                  unsigned char f6 :1;            // Flag 6
+     33                  unsigned char f7 :1;            // Flag 7
+     34              };
+     35          } flags;
+     36          
+     37          
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     38          flags tareas;                           // Flags activacion tareas:
+   \                     tareas:
+   \   000000                DS8 1
+     39                                                  //  BIT0: Tarea_0 -> Pulsador S3 presionado
+     40                                                  //  BIT1: Tarea_1 -> Pulsador S3 soltado
+     41                                                  //  BIT2: Tarea_2 -> Pulsador S4 presionado
+     42                                                  //  BIT3: Tarea_3 -> Pulsador S4 soltado
+     43                                                  //  BIT4: Tarea_4 -> Pulsador S5 presionado
+     44                                                  //  BIT5: Tarea_5 -> Pulsador S5 soltado
+     45                                                  //  BIT6: Tarea_6 -> Pulsador S6 presionado
+     46                                                  //  BIT7: Tarea_7 -> Pulsador S6 soltado
+     47          
+     48          
+     49          /* ===== Prototipos ===== */
+     50          
+     51          void Config_uC();
+     52          
+     53          void Config_Perifericos();
+     54          
+     55          
+     56          
+     57          /* ===== MAIN ===== */
+     58          
+
+   \                                 In  segment CODE, align 2
+     59          int main () {
+   \                     main:
+     60              
+     61              // Configuracion uControlador
+     62              Config_uC();
+   \   000000   B012....     CALL    #Config_uC
+     63              
+     64              // Configuracion de perifericos
+     65              Config_Perifericos();
+   \   000004   B012....     CALL    #Config_Perifericos
+     66              
+     67              // Inicializamos variables
+     68              tareas.total = 0;
+   \   000008   C243....     MOV.B   #0x0, &tareas
+     69              
+     70              // Habilitamos interrupciones
+     71              __enable_interrupt();
+   \   00000C   32D2         EINT
+     72              
+     73              // Bucle principal
+     74              for (;;) {
+     75              
+     76                  // Bajo consumo (LPM4)
+     77                  __low_power_mode_4();
+   \                     ??main_0:
+   \   00000E   32D0F800     BIS.W   #0xf8, SR
+     78                  
+     79                  while (tareas.total != OFF) {           // CAMBIAR if´s POR SWITCH??????
+   \                     ??main_1:
+   \   000012   C293....     CMP.B   #0x0, &tareas
+   \   000016   FB27         JEQ     ??main_0
+     80                      
+     81                      // Tarea_0 -> Pulsador S3 presionado (enciende LED3)
+     82                      if (tareas.f0 == ON) {      
+   \   000018   D2B3....     BIT.B   #0x1, &tareas
+   \   00001C   0528         JNC     ??main_2
+     83                          tareas.f0 = OFF;        // Limpia flag Tarea_0
+   \   00001E   D2C3....     BIC.B   #0x1, &tareas
+     84                          P2OUT_bit.P4 = LED_ON;  // P2.4 -> Enciende LED3
+   \   000022   F2D010002900 BIS.B   #0x10, &0x29
+     85                      } // if (tareas.f0 == ON)
+     86                      
+     87                      // Tarea_1 -> Pulsador S3 soltado (apaga LED3)
+     88                      if (tareas.f1 == ON) {
+   \                     ??main_2:
+   \   000028   5E42....     MOV.B   &tareas, R14
+   \   00002C   12C3         CLRC
+   \   00002E   4E10         RRC.B   R14
+   \   000030   5EB3         BIT.B   #0x1, R14
+   \   000032   EF27         JEQ     ??main_1
+     89                          tareas.f1 = OFF;        // Limpia flag Tarea_1
+   \   000034   E2C3....     BIC.B   #0x2, &tareas
+     90                          P2OUT_bit.P4 = LED_OFF; // P2.4 -> Apaga LED3
+   \   000038   F2C010002900 BIC.B   #0x10, &0x29
+   \   00003E   E93F         JMP     ??main_1
+   \   000040                REQUIRE _A_P2OUT
+     91                      } // if (tareas.f1 == ON)
+     92                      
+     93                      
+     94                      /*
+     95                      
+     96                      // Tarea_2 -> Pulsador S4 presionado (enciende LED4)
+     97                      if (tareas.f2 == ON) {      
+     98                          tareas.f2 = OFF;        // Limpia flag Tarea_2
+     99                          P2OUT_bit.P5 = LED_ON;  // P2.5 -> Enciende LED4
+    100                      } // if (tareas.f2 == ON)
+    101                      
+    102                      // Tarea_3 -> Pulsador S4 soltado (apaga LED4)
+    103                      if (tareas.f3 == ON) {
+    104                          tareas.f3 = OFF;        // Limpia flag Tarea_3
+    105                          P2OUT_bit.P5 = LED_OFF; // P2.5 -> Apaga LED4
+    106                      } // if (tareas.f3 == ON)
+    107                      
+    108                      // Tarea_4 -> Pulsador S5 presionado (enciende LED5)
+    109                      if (tareas.f4 == ON) {      
+    110                          tareas.f4 = OFF;        // Limpia flag Tarea_4
+    111                          P2OUT_bit.P6 = LED_ON;  // P2.6 -> Enciende LED5
+    112                      } // if (tareas.f4 == ON)
+    113                      
+    114                      // Tarea_5 -> Pulsador S5 soltado (apaga LED5)
+    115                      if (tareas.f5 == ON) {
+    116                          tareas.f5 = OFF;        // Limpia flag Tarea_5
+    117                          P2OUT_bit.P6 = LED_OFF; // P2.6 -> Apaga LED5
+    118                      } // if (tareas.f5 == ON)
+    119                      
+    120                      // Tarea_6 -> Pulsador S6 presionado (enciende LED6)
+    121                      if (tareas.f6 == ON) {      
+    122                          tareas.f6 = OFF;        // Limpia flag Tarea_6
+    123                          P2OUT_bit.P7 = LED_ON;  // P2.7 -> Enciende LED6
+    124                      } // if (tareas.f6 == ON)
+    125                      
+    126                      // Tarea_7 -> Pulsador S6 soltado (apaga LED6)
+    127                      if (tareas.f7 == ON) {
+    128                          tareas.f7 = OFF;        // Limpia flag Tarea_1
+    129                          P2OUT_bit.P7 = LED_OFF; // P2.7 -> Apaga LED6
+    130                      } // if (tareas.f7 == ON)
+    131                      
+    132                      */
+    133                      
+    134                  } // Fin while (tareas.total)
+    135              
+    136              } // Fin for (;;)
+    137              
+    138              //return 0;   ?????
+    139          } //Fin MAIN
+    140          
+    141          
+    142          
+    143          /* ===== FUNCIONES ===== */
+    144          
+
+   \                                 In  segment CODE, align 2
+    145          void Config_uC() {
+   \                     Config_uC:
+    146              
+    147              WDTCTL = WDTPW + WDTHOLD;        // Detiene watchdog
+   \   000000   B240805A2001 MOV.W   #0x5a80, &0x120
+    148              DCOCTL = 0;                      // Frecuencia DCO (1MHz)
+   \   000006   C2435600     MOV.B   #0x0, &0x56
+    149              BCSCTL1 = CALBC1_1MHZ;
+   \   00000A   D242FF105700 MOV.B   &0x10ff, &0x57
+    150              DCOCTL = CALDCO_1MHZ;
+   \   000010   D242FE105600 MOV.B   &0x10fe, &0x56
+    151              
+    152          } // Fin Config_uC()
+   \   000016   3041         RET
+   \   000018                REQUIRE _A_WDTCTL
+   \   000018                REQUIRE _A_DCOCTL
+   \   000018                REQUIRE _A_BCSCTL1
+   \   000018                REQUIRE CALBC1_1MHZ
+   \   000018                REQUIRE CALDCO_1MHZ
+    153          
+    154          
+
+   \                                 In  segment CODE, align 2
+    155          void Config_Perifericos() {                          // POR AHORA SOLO S3 y LED3
+   \                     Config_Perifericos:
+    156              
+    157              // ----- Pulsadores [S3, S4, S5, S6] -----       Â¿P1DIR = 0xXXXX?
+    158              
+    159              // Pulsador S3 (p1.4)
+    160              P1SEL_bit.P4    = 0;                // Configuramos pin como E/S
+   \   000000   F2C010002600 BIC.B   #0x10, &0x26
+    161              P1SEL2_bit.P4   = 0;                //
+   \   000006   F2C010004100 BIC.B   #0x10, &0x41
+    162              P1DIR_bit.P4    = 0;                // Establecido como salida
+   \   00000C   F2C010002200 BIC.B   #0x10, &0x22
+    163              P1REN_bit.P4    = 1;                // Habilitamos resistencia
+   \   000012   F2D010002700 BIS.B   #0x10, &0x27
+    164              P1OUT_bit.P4    = 1;                // Resistencia pullup
+   \   000018   F2D010002100 BIS.B   #0x10, &0x21
+    165              P1IE_bit.P4     = 1;                // Habilitamos interrupciones
+   \   00001E   F2D010002500 BIS.B   #0x10, &0x25
+    166              P1IES_bit.P4    = 1;                // Interrupcion cuando 1 -> 0
+   \   000024   F2D010002400 BIS.B   #0x10, &0x24
+    167              P1IFG_bit.P4    = 0;                // Limpiamos flag interrupcion
+   \   00002A   F2C010002300 BIC.B   #0x10, &0x23
+    168              
+    169              /*
+    170              
+    171              // Pulsador S4 (p2.1)
+    172              P2SEL_bit.P1    = 0;                // Configuramos pin como E/S
+    173              P2SEL2_bit.P1   = 0;                //
+    174              P2DIR_bit.P1    = 0;                // Establecido como salida
+    175              P2REN_bit.P1    = 1;                // Habilitamos resistencia
+    176              P2OUT_bit.P1    = 1;                // Resistencia pullup
+    177              P2IE_bit.P1     = 1;                // Habilitamos interrupciones
+    178              P2IES_bit.P1    = 1;                // Interrupcion cuando 1 -> 0
+    179              P2IFG_bit.P1    = 0;                // Limpiamos flag interrupcion
+    180              
+    181              // Pulsador S5 (p2.2)
+    182              P2SEL_bit.P2    = 0;                // Configuramos pin como E/S
+    183              P2SEL2_bit.P2   = 0;                //
+    184              P2DIR_bit.P2    = 0;                // Establecido como salida
+    185              P2REN_bit.P2    = 1;                // Habilitamos resistencia
+    186              P2OUT_bit.P2    = 1;                // Resistencia pullup
+    187              P2IE_bit.P2     = 1;                // Habilitamos interrupciones
+    188              P2IES_bit.P2    = 1;                // Interrupcion cuando 1 -> 0
+    189              P2IFG_bit.P2    = 0;                // Limpiamos flag interrupcion
+    190              
+    191              // Pulsador S6 (p2.3)
+    192              P2SEL_bit.P3    = 0;                // Configuramos pin como E/S
+    193              P2SEL2_bit.P3   = 0;                //
+    194              P2DIR_bit.P3    = 0;                // Establecido como salida
+    195              P2REN_bit.P3    = 1;                // Habilitamos resistencia
+    196              P2OUT_bit.P3    = 1;                // Resistencia pullup
+    197              P2IE_bit.P3     = 1;                // Habilitamos interrupciones
+    198              P2IES_bit.P3    = 1;                // Interrupcion cuando 1 -> 0
+    199              P2IFG_bit.P3    = 0;                // Limpiamos flag interrupcion
+    200          
+    201              */
+    202              
+    203              // ----- Leds [LED3, LED4, LED5, LED6] -----
+    204             
+    205              // Led LED3 (p2.4)
+    206              P2SEL_bit.P4    = 0;                // Configuramos pin como E/S
+   \   000030   F2C010002E00 BIC.B   #0x10, &0x2e
+    207              P2SEL2_bit.P4   = 0;                //
+   \   000036   F2C010004200 BIC.B   #0x10, &0x42
+    208              P2DIR_bit.P4    = 1;                // Establecido como salida
+   \   00003C   F2D010002A00 BIS.B   #0x10, &0x2a
+    209              P2OUT_bit.P4    = 0;                // Establecemos valor inicial
+   \   000042   F2C010002900 BIC.B   #0x10, &0x29
+    210              /*
+    211              P2REN_bit.P4    = 0;                // Resistencia deshabilitada     ???????
+    212              P2IE_bit.P4     = 0;                // Interrupciones deshabilitadas ???????
+    213              */
+    214              
+    215          } // Fin Config_Perifericos
+   \   000048   3041         RET
+   \   00004A                REQUIRE _A_P1SEL
+   \   00004A                REQUIRE _A_P1SEL2
+   \   00004A                REQUIRE _A_P1DIR
+   \   00004A                REQUIRE _A_P1REN
+   \   00004A                REQUIRE _A_P1OUT
+   \   00004A                REQUIRE _A_P1IE
+   \   00004A                REQUIRE _A_P1IES
+   \   00004A                REQUIRE _A_P1IFG
+   \   00004A                REQUIRE _A_P2SEL
+   \   00004A                REQUIRE _A_P2SEL2
+   \   00004A                REQUIRE _A_P2DIR
+   \   00004A                REQUIRE _A_P2OUT
+    216          
+    217          
+    218          
+    219          /* ===== RUTINAS TRATAMIENTO INTERRUPCION ===== */
+    220          
+    221          // Rutina de tratamiento del puerto 1 (P1)
+    222          #pragma vector = PORT1_VECTOR
+
+   \                                 In  segment CODE, align 2
+    223          __interrupt void RTI_P1 () {
+   \                     RTI_P1:
+   \   000000   0E12         PUSH.W  R14
+    224              
+    225              // ===== COPIADO Y EDITADO DE "Practica4a.c" =====
+    226              // Prueba de funcionamiento para pulsador S3 y LED3
+    227              
+    228              if (P1IES_bit.P4 == ON) {       // Si flanco de bajada (pulsador presionado)
+   \   000002   5E422400     MOV.B   &0x24, R14
+   \   000006   12C3         CLRC
+   \   000008   4E10         RRC.B   R14
+   \   00000A   4E11         RRA.B   R14
+   \   00000C   4E11         RRA.B   R14
+   \   00000E   4E11         RRA.B   R14
+   \   000010   5EB3         BIT.B   #0x1, R14
+   \   000012   0324         JEQ     ??RTI_P1_0
+    229          		tareas.f0 = ON;			    // Activar Tarea_0
+   \   000014   D2D3....     BIS.B   #0x1, &tareas
+   \   000018   023C         JMP     ??RTI_P1_1
+    230          	} // if (P1IES_bit.P3 == ON)
+    231          
+    232          	else {                          // Si flanco de subida (pulsador soltado)
+    233          		tareas.f1 = ON;			    // Activar Tarea_1
+   \                     ??RTI_P1_0:
+   \   00001A   E2D3....     BIS.B   #0x2, &tareas
+    234          	} // else: if (P1IES_bit.P3 == ON)
+    235          
+    236          	P1IES_bit.P4 = ~(P1IES_bit.P4);		// P1.4 -> Conmuta flanco
+   \                     ??RTI_P1_1:
+   \   00001E   F2B010002400 BIT.B   #0x10, &0x24
+   \   000024   0428         JNC     ??RTI_P1_2
+   \   000026   F2C010002400 BIC.B   #0x10, &0x24
+   \   00002C   033C         JMP     ??RTI_P1_3
+   \                     ??RTI_P1_2:
+   \   00002E   F2D010002400 BIS.B   #0x10, &0x24
+    237          	P1IFG_bit.P4 = OFF;			// Limpia flag P1.4
+   \                     ??RTI_P1_3:
+   \   000034   F2C010002300 BIC.B   #0x10, &0x23
+    238          
+    239          	if (tareas.total != OFF) {
+   \   00003A   C293....     CMP.B   #0x0, &tareas
+   \   00003E   0324         JEQ     ??RTI_P1_4
+    240          	// Si alguna tarea activa
+    241          		__low_power_mode_off_on_exit();	// Sale bajo consumo (LPM4)
+   \   000040   B1C0F0000200 BIC.W   #0xf0, 0x2(SP)
+    242          	} // if (tareas.total != OFF)
+    243              
+    244          } // Fin RTI_P1()
+   \                     ??RTI_P1_4:
+   \   000046   3E41         POP.W   R14
+   \   000048   0013         RETI
+   \   00004A                REQUIRE _A_P1IES
+   \   00004A                REQUIRE _A_P1IFG
+
+   \                                 In  segment INTVEC, offset 0x4, root
+   \                     `??RTI_P1??INTVEC 4`:
+   \   000004   ....         DC16    RTI_P1
+    245          
+    246          
+    247          
+    248          
+    249          
+
+   Maximum stack usage in bytes:
+
+     Function                CSTACK
+     --------                ------
+     Config_Perifericos          2
+     Config_uC                   2
+     RTI_P1                      6
+     main                        2
+       -> Config_uC              2
+       -> Config_Perifericos     2
+
+
+   Segment part sizes:
+
+     Function/Label     Bytes
+     --------------     -----
+     _A_DCOCTL             1
+     _A_BCSCTL1            1
+     _A_P1OUT              1
+     _A_P1DIR              1
+     _A_P1IFG              1
+     _A_P1IES              1
+     _A_P1IE               1
+     _A_P1SEL              1
+     _A_P1SEL2             1
+     _A_P1REN              1
+     _A_P2OUT              1
+     _A_P2DIR              1
+     _A_P2SEL              1
+     _A_P2SEL2             1
+     _A_WDTCTL             2
+     CALDCO_1MHZ           1
+     CALBC1_1MHZ           1
+     tareas                1
+     main                 64
+     Config_uC            24
+     Config_Perifericos   74
+     RTI_P1               74
+     ??RTI_P1??INTVEC 4    2
+
+ 
+ 236 bytes in segment CODE
+  18 bytes in segment DATA16_AN
+   1 byte  in segment DATA16_Z
+   2 bytes in segment INTVEC
+ 
+ 236 bytes of CODE  memory
+   0 bytes of CONST memory (+  2 bytes shared)
+   1 byte  of DATA  memory (+ 18 bytes shared)
+
+Errors: none
+Warnings: none
